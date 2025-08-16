@@ -140,13 +140,12 @@ class _SignupScreenState extends State<SignupScreen> {
                                   return;
                                 }
 
-                                _showToast("Registering, please wait...", true);
-
-                                final result = await AuthService.register(
+                                final result = await AuthService.auth(
                                   fullName: fullName,
                                   email: email,
                                   phone: phone,
                                   password: password,
+                                  isLogin : false
                                 );
 
                                 if (result["success"]) {
@@ -159,10 +158,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     AppRoutes.login,
                                   );
                                 } else {
-                                  _showToast(
-                                    "${AppStrings.registrationFailed} ${result["message"]}",
-                                    false,
-                                  );
+                                  _showToast(result["message"], false);
                                 }
                               },
                               child: const Text(
@@ -289,8 +285,8 @@ class _SignupScreenState extends State<SignupScreen> {
 void _showToast(String message, bool isSuccess) {
   Fluttertoast.showToast(
     msg: message,
-    toastLength: Toast.LENGTH_LONG,
-    gravity: ToastGravity.BOTTOM,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.TOP,
     backgroundColor: isSuccess ? Colors.green : Colors.red,
     textColor: Colors.white,
     fontSize: 16.0,
