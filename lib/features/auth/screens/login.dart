@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:pakgo/core/constants/app_strings.dart';
+import 'package:pakgo/features/auth/services/auth_service.dart';
 import 'package:pakgo/routes/app_routes.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -109,7 +112,35 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () async {
+                                final email = usernameController.text.trim();
+                                final password = passwordController.text.trim();
+
+                                if (email.isEmpty || password.isEmpty) {
+                                  _showToast("Missing Email or Password", false);
+                                  return;
+                                }
+
+                                final result = await AuthService.auth(
+                                  email: email,
+                                  password: password,
+                                  isLogin: true
+                                );
+
+                                if (result["success"]) {
+                                  _showToast(
+                                    AppStrings.loginSuccessful,
+                                    true,
+                                  );
+
+                                  Navigator.pushReplacementNamed(
+                                    context,
+                                    AppRoutes.signup,
+                                  );
+                                } else {
+                                  _showToast(result["message"], false);
+                                }
+                              },
                               child: const Text(
                                 "Login",
                                 style: TextStyle(
@@ -229,4 +260,15 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
+
+void _showToast(String message, bool isSuccess) {
+  Fluttertoast.showToast(
+    msg: message,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.TOP,
+    backgroundColor: isSuccess ? Colors.green : Colors.red,
+    textColor: Colors.white,
+    fontSize: 16.0,
+  );
 }
