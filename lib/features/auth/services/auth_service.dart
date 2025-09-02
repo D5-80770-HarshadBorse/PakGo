@@ -1,6 +1,7 @@
 import 'package:pakgo/core/constants/api_constants.dart';
 import 'package:pakgo/core/constants/app_strings.dart';
-import 'package:pakgo/core/network/api_client.dart'; // Import the modified ApiClient
+import 'package:pakgo/core/network/api_client.dart';
+import 'package:pakgo/data/models/user.dart'; // Import the modified ApiClient
 
 class AuthService {
   static Future<Map<String, dynamic>> auth({
@@ -34,7 +35,9 @@ class AuthService {
 
       if (response.statusCode == 200) {
         if(isLogin){
-          ApiClient().setAuthToken(response.data["token"].toString());
+          final user = User.fromJson(response.data);
+          final token = response.data['token'].toString();
+          return {"success": true, "user": user, "token": token};
         }
         return {"success": true, "data": response.data};
       }
