@@ -27,7 +27,7 @@ class _SignupScreenState extends State<SignupScreen> {
       resizeToAvoidBottomInset:
           false, // Prevents the screen from resizing when the keyboard opens
       body: Stack(
-        // Use Stack to layer the widgets
+        // Use Stack to layer the providers
         children: [
           // Top section with welcome message and input fields
           Column(

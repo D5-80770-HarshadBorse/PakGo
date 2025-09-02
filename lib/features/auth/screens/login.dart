@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:pakgo/core/constants/app_strings.dart';
+import 'package:pakgo/data/models/user.dart';
+import 'package:pakgo/data/providers/user_provider.dart';
 import 'package:pakgo/features/auth/services/auth_service.dart';
 import 'package:pakgo/routes/app_routes.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -24,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
       resizeToAvoidBottomInset:
           false, // Prevents the screen from resizing when the keyboard opens
       body: Stack(
-        // Use Stack to layer the widgets
+        // Use Stack to layer the providers
         children: [
           // Top section with welcome message and input fields
           Column(
@@ -117,25 +120,31 @@ class _LoginScreenState extends State<LoginScreen> {
                                 final password = passwordController.text.trim();
 
                                 if (email.isEmpty || password.isEmpty) {
-                                  _showToast("Missing Email or Password", false);
+                                  _showToast(
+                                    "Missing Email or Password",
+                                    false,
+                                  );
                                   return;
                                 }
 
                                 final result = await AuthService.auth(
                                   email: email,
                                   password: password,
-                                  isLogin: true
+                                  isLogin: true,
                                 );
 
                                 if (result["success"]) {
-                                  _showToast(
-                                    AppStrings.loginSuccessful,
-                                    true,
-                                  );
+                                  _showToast(AppStrings.loginSuccessful, true);
+                                  final User user = result['user'];
+                                  final String token = result['token'];
+                                  await Provider.of<UserProvider>(
+                                    context,
+                                    listen: false,
+                                  ).login(user, token);
 
                                   Navigator.pushReplacementNamed(
                                     context,
-                                    AppRoutes.signup,
+                                    AppRoutes.home,
                                   );
                                 } else {
                                   _showToast(result["message"], false);
