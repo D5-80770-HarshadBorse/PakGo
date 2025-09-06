@@ -24,17 +24,13 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      resizeToAvoidBottomInset:
-          false, // Prevents the screen from resizing when the keyboard opens
+      resizeToAvoidBottomInset: false,
       body: Stack(
-        // Use Stack to layer the providers
         children: [
-          // Top section with welcome message and input fields
           Column(
-            mainAxisAlignment:
-                MainAxisAlignment.start, // Align content to the top
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const SizedBox(height: 100), // Creates space from the top
+              const SizedBox(height: 100),
               const Image(
                 image: AssetImage('assets/images/courier-services.png'),
                 height: 100.0,
@@ -62,15 +58,12 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
 
-          // Curved white bottom section with login button
           DraggableScrollableSheet(
-            initialChildSize: 0.18, // starting height (15% of screen)
+            initialChildSize: 0.18,
             minChildSize: 0.18,
             maxChildSize: 0.30,
-            // max height (50% of screen)
             builder: (context, scrollController) {
               return Padding(
-                // Use MediaQuery to add dynamic padding based on keyboard height
                 padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom,
                 ),
@@ -163,7 +156,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                           const SizedBox(height: 15),
 
-                          // Signup text
                           GestureDetector(
                             onTap: () {
                               Navigator.pushReplacementNamed(
@@ -190,7 +182,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
 
-                          // Social login buttons (visible when scrolled up)
                           const SizedBox(height: 25),
                           const Divider(thickness: 1),
                           const SizedBox(height: 15),

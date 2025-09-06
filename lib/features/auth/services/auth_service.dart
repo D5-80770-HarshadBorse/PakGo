@@ -1,7 +1,7 @@
 import 'package:pakgo/core/constants/api_constants.dart';
 import 'package:pakgo/core/constants/app_strings.dart';
 import 'package:pakgo/core/network/api_client.dart';
-import 'package:pakgo/data/models/user.dart'; // Import the modified ApiClient
+import 'package:pakgo/data/models/user.dart';
 
 class AuthService {
   static Future<Map<String, dynamic>> auth({
