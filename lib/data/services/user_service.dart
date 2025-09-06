@@ -6,7 +6,7 @@ class UserService {
   final ApiClient _apiClient = ApiClient();
 
   Future<User> fetchProfile() async {
-    final response = await _apiClient.get(ApiConstants.users);
+    final response = await _apiClient.get(ApiConstants.loggedInUser);
     final data = response.data;
 
     return User.fromJson(data is Map && data.containsKey('user') ? data['user'] : data);
@@ -19,7 +19,7 @@ class UserService {
       String password,
       ) async {
     final response = await _apiClient.put(
-      ApiConstants.users,
+      ApiConstants.updateUser,
       data: {
         "name": name,
         "email": email,
