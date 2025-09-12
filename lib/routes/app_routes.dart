@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:pakgo/core/constants/app_routes_constants.dart';
 import 'package:pakgo/features/auth/screens/SignupScreen.dart';
 import 'package:pakgo/features/auth/screens/login.dart';
 import 'package:pakgo/features/home/screen/home_screen.dart';
 
-class AppRoutes {
-  static const login = '/login';
-  static const signup = '/signup';
-  static const home = '/home';
-
+class AppRoutesInitializer {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case login:
+      case AppRoutes.login:
         return _fadeRoute(const LoginScreen());
-      case signup:
+      case AppRoutes.signup:
         return _fadeRoute(const SignupScreen());
-      case home:
+      case AppRoutes.home:
         return _fadeRoute(const HomeScreen());
       default:
         return _fadeRoute(const LoginScreen()); // fallback

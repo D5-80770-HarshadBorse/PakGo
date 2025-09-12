@@ -18,7 +18,7 @@ class AuthWrapper extends StatelessWidget {
         // This logic remains the same for auto-login
         if (userProvider.status == AuthStatus.Uninitialized) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            userProvider.tryAutoLogin();
+            userProvider.tryAutoLogin(context);
           });
         }
 

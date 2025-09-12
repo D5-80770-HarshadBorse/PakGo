@@ -14,7 +14,7 @@ class SplashScreen extends StatelessWidget {
       builder: (context, userProvider, child) {
         if (userProvider.status == AuthStatus.Uninitialized) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            userProvider.tryAutoLogin();
+            userProvider.tryAutoLogin(context);
           });
         }
         switch (userProvider.status) {

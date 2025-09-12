@@ -217,7 +217,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.logout, size: 20),
                 label: const Text('LOGOUT'),
-                onPressed: () => context.read<UserProvider>().logout(),
+                onPressed: () => context.read<UserProvider>().logout(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.redAccent,
                   foregroundColor: Colors.white,

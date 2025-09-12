@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:pakgo/core/constants/app_routes_constants.dart';
 import 'package:pakgo/core/constants/app_strings.dart';
 import 'package:pakgo/features/auth/services/auth_service.dart';
-import 'package:pakgo/routes/app_routes.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});

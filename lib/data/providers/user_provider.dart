@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pakgo/core/constants/app_routes_constants.dart';
 import 'package:pakgo/core/constants/auth_status.dart';
 import 'package:pakgo/core/network/api_client.dart';
 import 'package:pakgo/data/models/user.dart';
@@ -30,7 +31,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     _user = null;
     _token = null;
     _status = AuthStatus.Unauthenticated;
@@ -38,11 +39,14 @@ class UserProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
     ApiClient().clearAuthToken();
-
     notifyListeners();
+    Navigator.pushReplacementNamed(
+      context,
+      AppRoutes.login,
+    );
   }
 
-  Future<void> tryAutoLogin() async {
+  Future<void> tryAutoLogin(BuildContext context) async {
     _status = AuthStatus.Authenticating;
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
@@ -63,7 +67,7 @@ class UserProvider extends ChangeNotifier {
 
       notifyListeners();
     } catch (e) {
-      await logout();
+      await logout(context);
     }
   }
 
