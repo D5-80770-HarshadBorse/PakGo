@@ -8,11 +8,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserProvider extends ChangeNotifier {
   User? _user;
   String? _token;
-  final UserService userService = UserService();
+  final UserService _userService = UserService();
 
   AuthStatus _status = AuthStatus.Uninitialized;
 
-  // Getters
   User? get user => _user;
   String? get token => _token;
   AuthStatus get status => _status;
@@ -58,13 +57,51 @@ class UserProvider extends ChangeNotifier {
     ApiClient().setAuthToken(savedToken);
 
     try {
-      final loadedUser = await userService.fetchProfile();
+      final loadedUser = await _userService.fetchProfile();
       _user = loadedUser;
       _status = AuthStatus.Authenticated;
 
       notifyListeners();
     } catch (e) {
       await logout();
+    }
+  }
+
+  Future<void> fetchUserProfile() async {
+    try {
+      final userProfile = await _userService.fetchProfile();
+      _user = userProfile;
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> updateUserProfile(Map<String, dynamic> updateData) async {
+    if (_user == null) {
+      throw Exception('Cannot update profile: user not logged in.');
+    }
+    if (updateData.isEmpty) {
+      throw Exception('No changes to update.');
+    }
+
+    try {
+      final updatedUser = await _userService.updateProfile(_user!.id, updateData);
+      _user = updatedUser;
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> changePassword(Map<String, dynamic> updateData) async {
+    if (_user == null) {
+      throw Exception('User not logged in.');
+    }
+    try {
+      await _userService.updateProfile(_user!.id, updateData);
+    } catch (e) {
+      rethrow;
     }
   }
 }
