@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pakgo/features/auth/screens/SignupScreen.dart';
 import 'package:pakgo/features/auth/screens/login.dart';
+import 'package:pakgo/features/book/screen/booking_location.dart';
 import 'package:pakgo/features/home/screen/home_screen.dart';
 
 class AppRoutes {
   static const login = '/login';
   static const signup = '/signup';
   static const home = '/home';
+  static const locationPickerMap = '/location_picker_map';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -16,6 +18,8 @@ class AppRoutes {
         return _fadeRoute(const SignupScreen());
       case home:
         return _fadeRoute(const HomeScreen());
+      case locationPickerMap:
+        return _fadeRoute(const BookingLocation());
       default:
         return _fadeRoute(const LoginScreen()); // fallback
     }

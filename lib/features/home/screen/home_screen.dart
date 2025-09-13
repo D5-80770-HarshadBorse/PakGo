@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:pakgo/features/profile/screen/profile_screen.dart';
+import 'package:pakgo/routes/app_routes.dart';
 import 'package:provider/provider.dart';
 import 'package:pakgo/data/providers/user_provider.dart';
 
@@ -79,7 +80,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: Bootstrap.box_arrow_up,
                   title: "Send",
                   subtitle: "Create a new delivery",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushReplacementNamed(
+                      context,
+                      AppRoutes.locationPickerMap,
+                    );
+                  },
                 ),
                 const SizedBox(width: 20),
                 _ActionCard(
