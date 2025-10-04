@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pakgo/features/auth/screens/SignupScreen.dart';
 import 'package:pakgo/features/auth/screens/login.dart';
-import 'package:pakgo/features/book/screen/booking_location.dart';
+import 'package:pakgo/features/book/screen/booking_location_screen.dart';
 import 'package:pakgo/features/home/screen/home_screen.dart';
 
 class AppRoutes {
