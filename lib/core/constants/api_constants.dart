@@ -1,5 +1,5 @@
 class ApiConstants {
-  static const String baseUrl = "http://13.232.161.127:8080/api";
+  static const String baseUrl = "http://192.168.0.105:8080/api";
 
   static const String register = "/auth/register";
   static const String login = "/auth/login";
@@ -7,6 +7,7 @@ class ApiConstants {
   static const String updateUser = "/users";
   static const String loggedInUser = "/users/current";
   static const String createOrder = '/orders';
+  static const String userOrders = '/orders/user';
 
 
 
@@ -19,6 +20,7 @@ class ApiConstants {
 
   static String osmReverseGeocodeUrl(double lat, double lon) =>
       'https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon';
+
 
   static String osrmRouteUrl(double startLon, double startLat, double endLon, double endLat) =>
       'http://router.project-osrm.org/route/v1/driving/$startLon,$startLat;$endLon,$endLat?overview=full&geometries=geojson';

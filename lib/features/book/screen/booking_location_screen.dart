@@ -7,10 +7,14 @@ import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_ti
 import 'package:pakgo/core/constants/api_constants.dart';
 import 'package:pakgo/core/widgets/ImageAssetMarker.dart';
 import 'package:pakgo/core/widgets/PulsingLocationPin.dart';
+import 'package:pakgo/data/providers/booking_provider.dart';
+import 'package:pakgo/features/book/screen/confirmation_screen.dart';
 import 'package:pakgo/features/book/services/location_service.dart';
+import 'package:pakgo/routes/app_routes.dart';
+import 'package:provider/provider.dart';
 
-// OPTIMIZED: Enums remain the same, they are a good pattern.
 enum BookingState { loadingLocation, viewingMap, searchingAddress }
+
 enum AddressField { pickup, dropoff }
 
 class BookingLocation extends StatefulWidget {
@@ -22,7 +26,8 @@ class BookingLocation extends StatefulWidget {
 
 class _BookingLocationState extends State<BookingLocation> {
   // --- Services and Controllers ---
-  final LocationService _locationService = LocationService(); // NEW: Service instance
+  final LocationService _locationService =
+      LocationService(); // NEW: Service instance
   final MapController _mapController = MapController();
   final TextEditingController _pickupController = TextEditingController();
   final TextEditingController _dropoffController = TextEditingController();
@@ -80,7 +85,9 @@ class _BookingLocationState extends State<BookingLocation> {
       );
       final currentLatLng = LatLng(position.latitude, position.longitude);
       // OPTIMIZED: Call the service for reverse geocoding
-      final address = await _locationService.getAddressFromLatLng(currentLatLng);
+      final address = await _locationService.getAddressFromLatLng(
+        currentLatLng,
+      );
 
       setState(() {
         _pickupLocation = currentLatLng;
@@ -99,7 +106,8 @@ class _BookingLocationState extends State<BookingLocation> {
 
   Future<void> _searchAddress(String query) async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () async { // Reduced debounce time slightly
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      // Reduced debounce time slightly
       if (query.isEmpty) {
         setState(() => _searchResults = []);
         return;
@@ -123,7 +131,10 @@ class _BookingLocationState extends State<BookingLocation> {
     setState(() => _isRouteLoading = true);
     try {
       // OPTIMIZED: Call the service to get the route
-      final newRoutePoints = await _locationService.getRoute(_pickupLocation!, _dropoffLocation!);
+      final newRoutePoints = await _locationService.getRoute(
+        _pickupLocation!,
+        _dropoffLocation!,
+      );
       if (mounted) setState(() => _routePoints = newRoutePoints);
     } catch (e) {
       _showErrorSnackBar(e.toString());
@@ -151,7 +162,10 @@ class _BookingLocationState extends State<BookingLocation> {
       await _getRoute();
 
       if (_pickupLocation != null && _dropoffLocation != null) {
-        final bounds = LatLngBounds.fromPoints([_pickupLocation!, _dropoffLocation!]);
+        final bounds = LatLngBounds.fromPoints([
+          _pickupLocation!,
+          _dropoffLocation!,
+        ]);
         _mapController.fitCamera(
           CameraFit.bounds(bounds: bounds, padding: const EdgeInsets.all(50)),
         );
@@ -165,7 +179,8 @@ class _BookingLocationState extends State<BookingLocation> {
       markers.add(
         Marker(
           point: _pickupLocation!,
-          width: 60, height: 60,
+          width: 60,
+          height: 60,
           child: const PulsingLocationPin(),
         ),
       );
@@ -174,8 +189,11 @@ class _BookingLocationState extends State<BookingLocation> {
       markers.add(
         Marker(
           point: _dropoffLocation!,
-          width: 50, height: 70,
-          child: const ImageAssetMarker(assetPath: 'assets/images/dropoff_pin.png'),
+          width: 50,
+          height: 70,
+          child: const ImageAssetMarker(
+            assetPath: 'assets/images/dropoff_pin.png',
+          ),
         ),
       );
     }
@@ -205,7 +223,10 @@ class _BookingLocationState extends State<BookingLocation> {
                   polylines: [
                     Polyline(
                       points: _routePoints,
-                      gradientColors: [Colors.blue.shade300, Colors.blue.shade700],
+                      gradientColors: [
+                        Colors.blue.shade300,
+                        Colors.blue.shade700,
+                      ],
                       strokeWidth: 5,
                     ),
                   ],
@@ -227,14 +248,18 @@ class _BookingLocationState extends State<BookingLocation> {
 
   Widget _buildSearchPanel() {
     return Positioned(
-      top: 0, left: 0, right: 0,
+      top: 0,
+      left: 0,
+      right: 0,
       child: SafeArea(
         child: Container(
           margin: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: Colors.grey[850],
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20)],
+            boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20),
+            ],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -249,7 +274,16 @@ class _BookingLocationState extends State<BookingLocation> {
                       setState(() => _bookingState = BookingState.viewingMap);
                     },
                   ),
-                  const Expanded(child: Text("Set Destination", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold))),
+                  const Expanded(
+                    child: Text(
+                      "Set Destination",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ],
               ),
               Padding(
@@ -260,7 +294,15 @@ class _BookingLocationState extends State<BookingLocation> {
                       controller: _pickupController,
                       readOnly: true,
                       style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(hintText: "Pickup location", hintStyle: TextStyle(color: Colors.grey[400]), border: InputBorder.none, prefixIcon: const Icon(Icons.my_location, color: Colors.white)),
+                      decoration: InputDecoration(
+                        hintText: "Pickup location",
+                        hintStyle: TextStyle(color: Colors.grey[400]),
+                        border: InputBorder.none,
+                        prefixIcon: const Icon(
+                          Icons.my_location,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 8),
                     TextField(
@@ -268,14 +310,25 @@ class _BookingLocationState extends State<BookingLocation> {
                       autofocus: true,
                       onChanged: _searchAddress,
                       style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(hintText: "Where to?", hintStyle: TextStyle(color: Colors.grey[400]), border: InputBorder.none, prefixIcon: const Icon(Icons.search, color: Colors.white)),
+                      decoration: InputDecoration(
+                        hintText: "Where to?",
+                        hintStyle: TextStyle(color: Colors.grey[400]),
+                        border: InputBorder.none,
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
               const Divider(color: Colors.grey),
               if (_isSearchingApi)
-                const Padding(padding: EdgeInsets.all(16.0), child: Center(child: CircularProgressIndicator()))
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Center(child: CircularProgressIndicator()),
+                )
               else
                 Flexible(
                   child: ListView.builder(
@@ -284,8 +337,14 @@ class _BookingLocationState extends State<BookingLocation> {
                     itemBuilder: (context, index) {
                       final result = _searchResults[index];
                       return ListTile(
-                        leading: const Icon(Icons.location_on, color: Colors.white),
-                        title: Text(result['display_name'] ?? '', style: const TextStyle(color: Colors.white)),
+                        leading: const Icon(
+                          Icons.location_on,
+                          color: Colors.white,
+                        ),
+                        title: Text(
+                          result['display_name'] ?? '',
+                          style: const TextStyle(color: Colors.white),
+                        ),
                         onTap: () => _onSearchResultSelected(result),
                       );
                     },
@@ -299,30 +358,55 @@ class _BookingLocationState extends State<BookingLocation> {
   }
 
   Widget _buildMapPanel() {
-    bool canConfirm = _pickupLocation != null && _dropoffLocation != null && _routePoints.isNotEmpty;
+    bool canConfirm =
+        _pickupLocation != null &&
+        _dropoffLocation != null &&
+        _routePoints.isNotEmpty;
     return Positioned(
-      left: 0, right: 0, bottom: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
       child: Container(
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.grey[850],
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20)],
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20),
+          ],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             InkWell(
-              onTap: () => setState(() => _bookingState = BookingState.searchingAddress),
+              onTap: () =>
+                  setState(() => _bookingState = BookingState.searchingAddress),
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                decoration: BoxDecoration(color: Colors.grey[700], borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.grey[700],
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: Row(
                   children: [
                     const Icon(Icons.search, color: Colors.white),
                     const SizedBox(width: 12),
-                    Expanded(child: Text(_dropoffController.text.isEmpty ? "Where to?" : _dropoffController.text, style: const TextStyle(color: Colors.white, fontSize: 16), overflow: TextOverflow.ellipsis,)),
+                    Expanded(
+                      child: Text(
+                        _dropoffController.text.isEmpty
+                            ? "Where to?"
+                            : _dropoffController.text,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -333,10 +417,41 @@ class _BookingLocationState extends State<BookingLocation> {
                 backgroundColor: canConfirm ? Colors.blueAccent : Colors.grey,
                 foregroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-              onPressed: canConfirm ? () { /* Your booking logic here */ } : null,
-              child: _isRouteLoading ? const CircularProgressIndicator(color: Colors.white) : const Text('CONFIRM BOOKING', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              onPressed: canConfirm
+                  ? () {
+                      final bookingProvider = Provider.of<BookingProvider>(
+                        context,
+                        listen: false,
+                      );
+
+                      bookingProvider.updatePickup(
+                        _pickupLocation!,
+                        _pickupController.text,
+                      );
+                      bookingProvider.updateDropoff(
+                        _dropoffLocation!,
+                        _dropoffController.text,
+                      );
+
+                      Navigator.pushReplacementNamed(
+                        context,
+                        AppRoutes.bookingConfirmation,
+                      );
+                    }
+                  : null,
+              child: _isRouteLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text(
+                      'CONFIRM BOOKING',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
             ),
           ],
         ),

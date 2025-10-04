@@ -103,7 +103,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: Clarity.map_outline_badged,
                   title: "Track",
                   subtitle: "Track your orders",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, AppRoutes.tracking);
+                  },
                 ),
                 const SizedBox(width: 20),
                 _ActionCard(
